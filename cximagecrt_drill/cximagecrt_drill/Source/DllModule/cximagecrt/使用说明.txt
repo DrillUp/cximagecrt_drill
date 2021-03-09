@@ -1,0 +1,9 @@
+10:48 2021/3/7
+
+	该dll来自工程 CxImageFull（升级成vs2013）> CxImageCrtDll项目 的编译结果。
+	x64和x32都是release编译，无debug版本。
+	
+	另外，没有添加Unicode宏编译（加Unicode宏，TCHAR问题无法编译），也就是说，字符串不支持中文。
+	【工程引用时，不要添加Unicode宏，不然TCHAR会变成 WCHAR 编译不通过。】
+	
+	工程版本为：cximage702_full。

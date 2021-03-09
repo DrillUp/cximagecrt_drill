@@ -1,0 +1,11 @@
+2021-3-9
+
+	该 Test 和 cximagecrt_drill 工程是两个分离的结构。
+	不是工程直接引导dll调用的那种结构。
+
+	DllModule模块下，分为 src_header，x32，x64
+
+	如果你修改了 cximagecrt_drill 工程，那么，需要：
+		1.复制 s_cximageManager.h 头文件到 DllModule 中。
+			
+		2.
