@@ -1,4 +1,4 @@
-# cximagecrt_drill.dll 图像处理库
+# cximagecrt_drill.dll 图像处理库（目前只有GIF生成和拆解）
 
 	该dll是由 qt5.5 + vs2013 编写而成，能够打包成32位程序，支持xp系统。
 	
