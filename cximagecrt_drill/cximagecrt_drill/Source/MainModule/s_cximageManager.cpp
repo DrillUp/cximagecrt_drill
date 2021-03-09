@@ -4,7 +4,7 @@
 #include "Source/DllModule/cximagecrt/src_header/ximage.h"
 #include "Source/DllModule/cximagecrt/src_header/ximagif.h"
 #include "Source/Utils/common/p_FileOperater.h"
-#include <QDebug>
+#include <QImage>
 
 /*
 -----==========================================================-----
@@ -121,13 +121,48 @@ bool S_cximageManager::generateGIF( QList<QFileInfo> file_list, QFileInfo gif_pa
 	QList<QFileInfo> file_eng_list = QList<QFileInfo>();
 	P_FileOperater p_FileOperater = P_FileOperater();
 
+	// > 读取图片
+	QList<QImage> image_list = QList<QImage>();
+	for (int i = 0; i < file_list.count(); i++){
+		QFileInfo info = file_list.at(i);
+		QImage image = QImage();
+		image.load(info.absoluteFilePath());
+		image_list.push_back(image);
+	}
+
+	// > 获取高宽
+	int max_width = 0;
+	int max_height = 0;
+	for (int i = 0; i < image_list.count(); i++){
+		QImage image = image_list.at(i);
+		int w = image.width();
+		int h = image.height();
+		if (max_width < w){
+			max_width = w;
+		}
+		if (max_height < h){
+			max_height = h;
+		}
+	}
+
 	// > 复制到英文路径
 	QString eng_gif_path = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/cximagecrt_drill.gif";
 	QString eng_pic_path = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/cximagecrt_drill_";
-	for (int i = 0; i < file_list.count(); i++){
-		QFileInfo file_eng = QFileInfo(eng_pic_path + QString::number(i) + ".png");
-		p_FileOperater.copy_File(file_list.at(i), file_eng);
-		file_eng_list.append(file_eng);
+	for (int i = 0; i < image_list.count(); i++){
+		QImage image = image_list.at(i);
+		if ( image.width() == max_width && 
+			 image.height() == max_height ){
+
+			// > 直接复制文件
+			QFileInfo file_eng = QFileInfo(eng_pic_path + QString::number(i) + ".png");
+			p_FileOperater.copy_File(file_list.at(i), file_eng);
+			file_eng_list.append(file_eng);
+		
+		}else{
+
+			// > 图片居中处理
+			//...
+		}
 	}
 
 	// > 执行合成（私有）
@@ -167,10 +202,11 @@ bool S_cximageManager::dismantlingGIF_private(QFileInfo gif_path, char* suffix){
 	for (int i = frame_count-1; i >= 0; i--) {
 		QString file_png = dir_path + "/" + gif_path.completeBaseName() + "_" + QString::number(i) + "." + suffix_str;
 
-		gif_img.SetFrame(i);		//（要指定了frame后，再load才能拿到帧）
-		gif_img.Load(file_path.toLocal8Bit(), CXIMAGE_FORMAT_GIF);
-		gif_img.Save(file_png.toLocal8Bit(), format);
-		this->m_lastIntervalList.append(gif_img.GetFrameDelay());
+		CxImage img = CxImage();	//（一定要新建，不然会出现png未清理的颜色残留）
+		img.SetFrame(i);			//（要指定了frame后，再load才能拿到帧）
+		img.Load(file_path.toLocal8Bit(), CXIMAGE_FORMAT_GIF);
+		img.Save(file_png.toLocal8Bit(), format);
+		this->m_lastIntervalList.append(img.GetFrameDelay());
 
 	}
 	return true;
