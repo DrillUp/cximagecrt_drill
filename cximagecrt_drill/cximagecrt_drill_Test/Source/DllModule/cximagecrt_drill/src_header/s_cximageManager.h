@@ -38,6 +38,7 @@ class CXIMAGECRT_DRILL_EXPORT S_cximageManager
 	private:
 		QList<int> m_lastIntervalList;		//帧间隔数据
 		QList<QFileInfo> m_lastFileList;	//拆解的文件列表
+		QString m_lastDismantledError;		//错误信息
 	public:
 											//拆解 - 执行拆解
 											//		【参数1】：GIF的路径
@@ -54,9 +55,13 @@ class CXIMAGECRT_DRILL_EXPORT S_cximageManager
 		QList<int> getLastDismantledGIFIntervalList();
 											//拆解 - 获取拆解后的文件列表
 		QList<QFileInfo> getLastDismantledGIFFileList();
+											//拆解 - 获取拆解时错误信息
+		QString getLastDismantledError();
 		
 	//-----------------------------------
 	//----合成GIF
+	private:
+		QString m_lastGenerateError;		//错误信息
 	public:
 											//合成 - 执行合成
 											//		【参数1】：合成的图片文件路径
@@ -64,7 +69,10 @@ class CXIMAGECRT_DRILL_EXPORT S_cximageManager
 											//		【参数3】：默认帧间隔（单位0.01秒）
 											//		【参数4】：自定义帧间隔列表
 		bool generateGIF(QList<QFileInfo> file_list, QFileInfo gif_path, int frame_interval, QList<int> frame_intervalList = QList<int>());
-		
+											//合成 - 获取合成时错误信息
+		QString getLastGenerateError();
+
+
 	//-----------------------------------
 	//----图像操作（私有）
 	protected:
@@ -80,6 +88,7 @@ class CXIMAGECRT_DRILL_EXPORT S_cximageManager
 											//操作 - 执行合成（私有）
 											//		【说明1】：输入的路径不能有中文。
 		bool generateGIF_private(QList<QFileInfo> file_list, QFileInfo gif_path, int frame_interval, QList<int> frame_intervalList);
+		bool generateGIF_private(QList<QImage> file_list, QFileInfo gif_path, int frame_interval, QList<int> frame_intervalList);
 
 };
 
